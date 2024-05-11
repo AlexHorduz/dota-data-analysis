@@ -13,12 +13,14 @@ from .models import (
     RecommenderInputModel
 )
 from data_analysis.heroes_recommender import Recommender
+from data_analysis.toxicity_classifier import ToxicityClassifier
 
 router = APIRouter()
 
 rec = Recommender()
 rec.update_data()
 
+tox = ToxicityClassifier()
 
 @router.post("/getToxicity", response_model=Dict[str, List])
 async def get_toxicity(rating_input: RatingInputModel):
