@@ -1,0 +1,18 @@
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from core.config import settings
+from .dal import (
+    get_games_played_by_user, 
+    get_all_heroes_ids, 
+    get_random_user_ids, 
+    get_hero_games_count_by_users
+)
+from . import dal
+
+
+# engine = create_engine(settings.SQL_DATABASE_URL) # TODO uncomment when DB is ready
+engine = None
+
+session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)

@@ -1,6 +1,9 @@
 from fastapi import APIRouter
 
-from .models import RatingInputModel
+from .models import (
+    RatingInputModel,
+    RecommenderInputModel
+)
 from . import endpoints
 
 router = APIRouter()

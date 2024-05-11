@@ -4,13 +4,21 @@ import random
 from typing import (
     List,
     Dict,
-    Tuple,
+    Tuple
 )
 
 from fastapi import APIRouter
-from .models import RatingInputModel
+from .models import (
+    RatingInputModel,
+    RecommenderInputModel
+)
+from data_analysis.heroes_recommender import Recommender
 
 router = APIRouter()
+
+rec = Recommender()
+rec.update_data()
+
 
 @router.post("/getToxicity", response_model=Dict[str, List])
 async def get_toxicity(rating_input: RatingInputModel):
@@ -27,7 +35,7 @@ async def get_toxicity(rating_input: RatingInputModel):
         response["names"] = [f"{rating} - {rating+step}" for rating in range(0, step*N, step)]
     return response
 
-@router.post("/getWordsPopularity", response_model=List[Tuple[str, int]])
+@router.get("/getWordsPopularity", response_model=List[Tuple[str, int]])
 async def get_words_popularity(rating_input: RatingInputModel):
     words_popularity = dict()
     for i in range(10):
@@ -49,7 +57,7 @@ async def get_words_popularity(rating_input: RatingInputModel):
     return words_popularity
 
 
-@router.post("/getRandomWord", response_model=str)
+@router.get("/getRandomWord", response_model=str)
 async def get_random_word():
     random_word = ''.join(
         random.choices(
@@ -59,3 +67,13 @@ async def get_random_word():
     )
     
     return random_word
+
+@router.post("/getHeroesRecommendation", response_model=List[int])
+async def get_heroes_recommendation(data: RecommenderInputModel):
+    N = data.N
+    
+    if N < 1:
+        return []
+    
+    games_played = data.games_played
+    return rec.get_recommendations(games_played, N)
