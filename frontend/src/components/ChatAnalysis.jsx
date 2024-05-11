@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ChatToxicity from './ChatToxicity';
 import ChatWordsPopularity from './ChatWordsPopularity';
-
+import '../styles/ChatAnalysis.css'
 
 const ChatAnalysis = () => {
     const [toShowToxicity, setToShowToxicity] = useState(false);
@@ -9,30 +9,34 @@ const ChatAnalysis = () => {
 
     const showToxicity = () => {
         setToShowToxicity(true);
+        setToShowWordsPopularity(false);
     };
 
     const showWordsPopularity = () => {
         setToShowWordsPopularity(true);
-    };
-
-    const handleBack = () => {
         setToShowToxicity(false);
-        setToShowWordsPopularity(false);
     };
 
     return (
         <div>
-            <p> Chat analysis </p>
-            {!toShowToxicity && !toShowWordsPopularity && (
-                <div>
-                    <button onClick={showToxicity}>Show toxicity analysis</button>
-                    <button onClick={showWordsPopularity}>Show words popularity</button>
+            <h1> Chat analysis </h1>
+            <div className='button-container'>
+                <div
+                    onClick={showToxicity}
+                    className={`button ${toShowToxicity ? 'disabled' : ''}`}
+                >
+                    Show toxicity analysis
                 </div>
-            )}
+                <div
+                    onClick={showWordsPopularity}
+                    className={`button ${toShowWordsPopularity ? 'disabled' : ''}`}
+                >
+                    Show words popularity
+                </div>
+            </div>
 
             {(toShowToxicity || toShowWordsPopularity) && (
                 <div>
-                    <button onClick={handleBack}>Back</button>
                     {toShowToxicity && <ChatToxicity />}
                     {toShowWordsPopularity && <ChatWordsPopularity />}
                 </div>

@@ -2,7 +2,7 @@ import React from 'react';
 
 const ChatWordsPopularity = () => {
     return (
-        <p> Popularity </p>
+        <h2> Popularity </h2>
     );
 };
 

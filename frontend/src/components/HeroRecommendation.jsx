@@ -2,7 +2,7 @@ import React from 'react';
 
 const HeroRecommendation = () => {
     return (
-        <p> Hero recommendation </p>
+        <h1> Hero recommendation </h1>
     );
 };
 

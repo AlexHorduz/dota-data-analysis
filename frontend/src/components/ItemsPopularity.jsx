@@ -2,7 +2,7 @@ import React from 'react';
 
 const ItemsPopularity = () => {
     return (
-        <p> Popular items </p>
+        <h1> Popular items </h1>
     );
 };
 

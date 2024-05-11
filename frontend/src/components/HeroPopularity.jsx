@@ -2,7 +2,7 @@ import React from 'react';
 
 const HeroPopularity = () => {
     return (
-        <p> Popular heroes </p>
+        <h1> Popular heroes </h1>
     );
 };
 
