@@ -1,9 +1,9 @@
-.button-container {
+div.button-container {
     display: flex;
     justify-content: space-between; /* Space items evenly across the container */
 }
 
-.button {
+div.button {
     cursor: pointer;
     padding: 10px;
     margin: 5px;
@@ -11,7 +11,7 @@
     flex-grow: 1;
 }
 
-.disabled {
+div.button.disabled {
     background-color: gray;
     pointer-events: none;
 }

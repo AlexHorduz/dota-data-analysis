@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ItemsWinrateAnalysis from './ItemsWinrateAnalysis';
 import HeroesWinrateAnalysis from './HeroesWinrateAnalysis';
 import HeroesComboWinrateAnalysis from './HeroesComboWinrateAnalysis';
+import '../styles/DivButtons.css'
 
 const WinrateAnalysis = () => {
     const [toShowItemsWinrate, setToShowItemsWinrate] = useState(false)
