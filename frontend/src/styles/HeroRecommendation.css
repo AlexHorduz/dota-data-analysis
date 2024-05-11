@@ -1,0 +1,57 @@
+.hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 20px;
+}
+
+.hero-item {
+    text-align: center;
+}
+
+.hero-item img {
+    width: 100%; /* Ensures the image fills the container */
+    height: 50%; /* Ensures the image fills the container */
+    object-fit: cover; /* Ensures the image maintains its aspect ratio and covers the entire container */
+}
+
+
+.hero-item input {
+    width: 80px; /* Increased width */
+    padding: 10px; /* Increased padding */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px; /* Updated font size */
+    text-align: center;
+    background-color: #fff; /* White background */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+}
+
+.hero-item input:focus {
+    border-color: #007bff; /* Highlight border color on focus */
+    outline: none;
+}
+
+.submit-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    margin: 20px auto;
+    width: 150px; /* adjust as needed */
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+}
+
+.instructions {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
