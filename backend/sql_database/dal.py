@@ -4,33 +4,37 @@ import random
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func, select
 
-from .models import User, Hero, UserHeroGames
+from .models import (
+    Hero, 
+    UserHeroGames,
+    HeroesData
+)
 
-def add_hero(db: Session, hero_id: int, hero_name: str):
-    new_hero = Hero(id=hero_id, hero_name=hero_name)
-    db.add(new_hero)
-    db.commit()
 
-def get_all_heroes(db: Session):
-    return db.query(Hero).all()
 
-def get_user_by_id(db: Session, user_id: int):
-    return db.query(User).filter(User.id == user_id).first()
+def get_heroes_data(session: Session, rating_id: int):
+    subquery = (
+        session.query(func.max(HeroesData.timestamp).label("max_timestamp"))
+        .subquery()
+    )
+    if rating_id:
+        result = (
+            session.query(HeroesData)
+            .join(subquery, subquery.c.max_timestamp == HeroesData.timestamp)\
+            .filter(HeroesData.rating_id == rating_id)\
+            .all()
+        )
+    else:
+        result = (
+            session.query(HeroesData)
+            .join(subquery, subquery.c.max_timestamp == HeroesData.timestamp)\
+            .all()
+        )
 
-def get_hero_by_id(db: Session, hero_id: int):
-    return db.query(Hero).filter(Hero.id == hero_id).first()
+    return result
 
-def get_all_heroes_ids(db: Session):
-    return [hero.id for hero in db.query(Hero).all()]
-
-def get_all_heroes_ids_and_names(db: Session) -> List[Tuple[int, str]]:
-    return [(hero.id, hero.name) for hero in db.query(Hero).all()]
-
-def get_games_played_by_user(db: Session, user_id: int):
-    return db.query(UserHeroGames).filter(UserHeroGames.user_id == user_id).all()
-
-def get_games_played_by_hero(db: Session, hero_id: int):
-    return db.query(UserHeroGames).filter(UserHeroGames.hero_id == hero_id).all()
+def get_all_heroes_ids(session: Session):
+    return [hero.id for hero in session.query(Hero).all()]
 
 def get_random_user_ids_from_user_hero_games(session: Session, count: int) -> List[int]:
     random_user_ids = (

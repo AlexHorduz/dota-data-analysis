@@ -27,28 +27,19 @@ rec.update_data()
 
 # tox = ToxicityClassifier()
 
+@router.post("/getHeroesPopularity")
+async def get_heroes_popularity(rating_input: RatingInputModel):
+    rank_id = rating_input.rating
 
-@router.post("/addHero")
-async def add_hero(data: HeroInputModel):
     db = SessionLocal()
     try:
-        dal.add_hero(db, data.id, data.hero_name)
-        return {"message": "Hero created successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to create hero: {str(e)}")
+        response = dal.get_heroes_data(db, rank_id)
     finally:
         db.close()
 
+    return response
 
-@router.get("/getAllHeroes")
-async def get_all_heroes():
-    db = SessionLocal()
-    try:
-        all_heroes = dal.get_all_heroes(db)
-        print(all_heroes)
-        return all_heroes
-    finally:
-        db.close()
+    
 
 @router.post("/getToxicityOverTime", response_model=Dict[str, List])
 async def get_toxicity_over_time(rating_input: RatingInputModel):

@@ -54,14 +54,13 @@ const ChatWordsPopularity = () => {
 
             const sum = normalized_y.reduce((acc, num) => acc + num, 0);
 
-            // Divide each number by the sum
             normalized_y = normalized_y.map(num => num / sum * 100);
 
             const to_take = 30;
             let updatedPlotData = { ...plotData }
             updatedPlotData.y = response.data.map((pair) => pair[0]).slice(0, to_take).reverse();
             updatedPlotData.x = normalized_y.slice(0, to_take).reverse();
-            console.log(updatedPlotData);
+            setPlotData(updatedPlotData);
             setPlotData(updatedPlotData);
 
         } catch (error) {
