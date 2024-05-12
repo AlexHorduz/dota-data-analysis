@@ -7,15 +7,17 @@ const ChatWordsPopularity = () => {
     const [plotData, setPlotData] = useState({
         x: [],
         y: [],
-        type: "",
-        mode: ""
+        type: "bar",
+        mode: "",
+        marker: { color: 'rgb(240, 167, 125)' },
+        orientation: 'h'
     })
 
     // Data passed not through Plot data property
     const [additionalPlotData, setAdditionalPlotData] = useState({
         title: "Words normalized usage count",
-        xName: "",
-        yName: "Percentage of usage"
+        yName: "",
+        xName: "Percentage of usage"
     })
 
     const updateWordsPopularityData = async (event) => {
@@ -37,7 +39,7 @@ const ChatWordsPopularity = () => {
             const response = await axios.get(
                 `${process.env.REACT_APP_BACKEND_URL}/getWordsPopularity`,
                 {
-                    "params": params 
+                    "params": params
                 });
 
             let normalized_y = response.data.map((pair) => pair[1]);
@@ -48,11 +50,10 @@ const ChatWordsPopularity = () => {
             normalized_y = normalized_y.map(num => num / sum * 100);
 
             const to_take = 30;
-            let updatedPlotData = {
-                x: response.data.map((pair) => pair[0]).slice(0, to_take),
-                y: normalized_y.slice(0,to_take),
-                type: "bar"
-            }
+            let updatedPlotData = { ...plotData }
+            updatedPlotData.y = response.data.map((pair) => pair[0]).slice(0, to_take).reverse();
+            updatedPlotData.x = normalized_y.slice(0, to_take).reverse();
+            console.log(updatedPlotData);
             setPlotData(updatedPlotData);
 
         } catch (error) {
@@ -64,7 +65,7 @@ const ChatWordsPopularity = () => {
     return (
         <div>
             <h2> Popularity </h2>
-            <select onChange={updateWordsPopularityData}>
+            <select class="rating-dropdown" onChange={updateWordsPopularityData}>
                 <option value="default">Select  the rating ranges</option>
                 <option value="">All ratings</option>
                 <option value="10">Rating ID 1</option>
@@ -72,18 +73,19 @@ const ChatWordsPopularity = () => {
                 <option value="30">Rating ID 3</option>
                 <option value="40">Rating ID 4</option>
             </select>
-            {/* <p> Sorted Words Popularity: {JSON.stringify(wordsPopularity)} </p> */}
             <br />
-            <Plot
-                data={[plotData]}
-                layout={{
-                    width: 1500,
-                    height: 800,
-                    title: additionalPlotData.title,
-                    xaxis: { title: additionalPlotData.xName },
-                    yaxis: { title: additionalPlotData.yName }
-                }}
-            />
+            <div style={{ margin: '0 auto', width: '80%' }}>
+                <Plot
+                    data={[plotData]}
+                    layout={{
+                        width: 1500,
+                        height: 800,
+                        title: additionalPlotData.title,
+                        xaxis: { title: additionalPlotData.xName, automargin: true },
+                        yaxis: { title: additionalPlotData.yName, automargin: true }
+                    }}
+                />
+            </div>
         </div>
     );
 };

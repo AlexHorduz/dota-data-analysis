@@ -74,14 +74,12 @@ const ChatToxicity = () => {
             console.error('Error fetching toxicity:', error);
         }
     };
-    // TODO add mandatory plot toxicity~rating (maybe make the user set the date ranges)
-    // TODO add the datetime for the mentioned plot (in the title)
-    // TODO move the current plot below
+
     return (
         <div>
             <h2> Toxicity </h2>
-            <select onChange={updatePlot1Data}>
-                <option value="default">Select  the rating ranges</option>
+            <select className="rating-dropdown" onChange={updatePlot1Data}>
+                <option value="default">Select the rating ranges</option>
                 <option value="">All ratings</option>
                 <option value="10">Rating ID 1</option>
                 <option value="20">Rating ID 2</option>

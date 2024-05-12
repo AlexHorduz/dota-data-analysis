@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ChatToxicity from './ChatToxicity';
 import ChatWordsPopularity from './ChatWordsPopularity';
 import '../styles/DivButtons.css'
+import '../styles/ChatAnalysis.css'
 
 const ChatAnalysis = () => {
     const [toShowToxicity, setToShowToxicity] = useState(false);
