@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import Plot from 'react-plotly.js';
 import axios from 'axios';
+import ReactWordcloud from 'react-wordcloud';
 
 const ChatWordsPopularity = () => {
+    const [cloudData, setCloudData] = useState([]);
+
 
     const [plotData, setPlotData] = useState({
         x: [],
@@ -42,6 +45,11 @@ const ChatWordsPopularity = () => {
                     "params": params
                 });
 
+            setCloudData(response.data.slice(0, 50).map((pair) => ({
+                text: pair[0],
+                value: pair[1]
+            })))
+
             let normalized_y = response.data.map((pair) => pair[1]);
 
             const sum = normalized_y.reduce((acc, num) => acc + num, 0);
@@ -74,17 +82,31 @@ const ChatWordsPopularity = () => {
                 <option value="40">Rating ID 4</option>
             </select>
             <br />
-            <div style={{ margin: '0 auto', width: '80%' }}>
-                <Plot
-                    data={[plotData]}
-                    layout={{
-                        width: 1500,
-                        height: 800,
-                        title: additionalPlotData.title,
-                        xaxis: { title: additionalPlotData.xName, automargin: true },
-                        yaxis: { title: additionalPlotData.yName, automargin: true }
-                    }}
-                />
+            <div style={{ display: 'flex' }}>
+                <div style={{ flex: '50%' }}>
+                    <ReactWordcloud
+                        size={[600, 400]}
+                        words={cloudData}
+                        style={{ fontFamily: 'Arial', color: 'blue' }}
+                        options={{
+                            rotations: 2,
+                            rotationAngles: [-30, 0],
+                            transitionDuration: 50
+                        }}
+                    />
+                </div>
+                <div style={{ flex: '50%' }}>
+                    <Plot
+                        data={[plotData]}
+                        layout={{
+                            width: "100%",
+                            height: 800,
+                            title: additionalPlotData.title,
+                            xaxis: { title: additionalPlotData.xName, automargin: true },
+                            yaxis: { title: additionalPlotData.yName, automargin: true }
+                        }}
+                    />
+                </div>
             </div>
         </div>
     );
