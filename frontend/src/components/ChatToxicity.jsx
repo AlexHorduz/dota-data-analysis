@@ -13,7 +13,7 @@ const ChatToxicity = () => {
     const additionalPlot1Data = {
         title: "Chat toxicity over time",
         xName: "Time",
-        yName: "Toxicity rate"
+        yName: "Toxicity rate, %"
     }
     
     const [plot2Data, setPlot2Data] = useState({
@@ -26,7 +26,7 @@ const ChatToxicity = () => {
     const additionalPlot2Data = {
         title: "Current chat toxicity over different rating",
         xName: "Rating",
-        yName: "Toxicity rate"
+        yName: "Toxicity rate, %"
     }
 
     const getPlot2Data = async () => {
