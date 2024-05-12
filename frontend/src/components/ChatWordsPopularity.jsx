@@ -1,19 +1,60 @@
 import React, { useState } from 'react';
+import Plot from 'react-plotly.js';
 import axios from 'axios';
 
 const ChatWordsPopularity = () => {
-    const [wordsPopularity, setWordsPopularity] = useState([]);
 
-    const getWordsPopularity = async (event) => {
+    const [plotData, setPlotData] = useState({
+        x: [],
+        y: [],
+        type: "",
+        mode: ""
+    })
+
+    // Data passed not through Plot data property
+    const [additionalPlotData, setAdditionalPlotData] = useState({
+        title: "Words normalized usage count",
+        xName: "",
+        yName: "Percentage of usage"
+    })
+
+    const updateWordsPopularityData = async (event) => {
         let ratingId = event.target.value;
         if (!ratingId) {
             ratingId = null;
         }
+        if (ratingId === "default") {
+            return;
+        }
 
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getWordsPopularity`, { "rating": ratingId });
-            setWordsPopularity(response.data);
-            console.log(wordsPopularity);
+            let params = {}
+            if (ratingId === null) {
+                params = {
+                    "rating": ratingId
+                }
+            }
+            const response = await axios.get(
+                `${process.env.REACT_APP_BACKEND_URL}/getWordsPopularity`,
+                {
+                    "params": params 
+                });
+
+            let normalized_y = response.data.map((pair) => pair[1]);
+
+            const sum = normalized_y.reduce((acc, num) => acc + num, 0);
+
+            // Divide each number by the sum
+            normalized_y = normalized_y.map(num => num / sum * 100);
+
+            const to_take = 30;
+            let updatedPlotData = {
+                x: response.data.map((pair) => pair[0]).slice(0, to_take),
+                y: normalized_y.slice(0,to_take),
+                type: "bar"
+            }
+            setPlotData(updatedPlotData);
+
         } catch (error) {
             console.error('Error fetching words popularity:', error);
         }
@@ -23,14 +64,26 @@ const ChatWordsPopularity = () => {
     return (
         <div>
             <h2> Popularity </h2>
-            <select onChange={getWordsPopularity}>
+            <select onChange={updateWordsPopularityData}>
+                <option value="default">Select  the rating ranges</option>
                 <option value="">All ratings</option>
                 <option value="10">Rating ID 1</option>
                 <option value="20">Rating ID 2</option>
                 <option value="30">Rating ID 3</option>
                 <option value="40">Rating ID 4</option>
             </select>
-            <p> Sorted Words Popularity: {JSON.stringify(wordsPopularity)} </p>
+            {/* <p> Sorted Words Popularity: {JSON.stringify(wordsPopularity)} </p> */}
+            <br />
+            <Plot
+                data={[plotData]}
+                layout={{
+                    width: 1500,
+                    height: 800,
+                    title: additionalPlotData.title,
+                    xaxis: { title: additionalPlotData.xName },
+                    yaxis: { title: additionalPlotData.yName }
+                }}
+            />
         </div>
     );
 };

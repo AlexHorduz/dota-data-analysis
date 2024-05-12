@@ -4,7 +4,8 @@ import random
 from typing import (
     List,
     Dict,
-    Tuple
+    Tuple,
+    Optional
 )
 
 from fastapi import APIRouter
@@ -22,11 +23,13 @@ rec.update_data()
 
 tox = ToxicityClassifier()
 
+# TODO maybe add endpoint for updating the data (for every chart)
+
 @router.post("/getToxicity", response_model=Dict[str, List])
 async def get_toxicity(rating_input: RatingInputModel):
+    # TODO get data from database
     N = 10
-    init_toxicity = rating_input.rating if rating_input.rating else 100
-    toxicity = [init_toxicity] * N
+    toxicity = [random.randint(0, 100) for i in range(N)]
     response = {
         "toxicity": toxicity
     }
@@ -38,9 +41,9 @@ async def get_toxicity(rating_input: RatingInputModel):
     return response
 
 @router.get("/getWordsPopularity", response_model=List[Tuple[str, int]])
-async def get_words_popularity(rating_input: RatingInputModel):
+async def get_words_popularity(rating: Optional[int] = None):
     words_popularity = dict()
-    for i in range(10):
+    for i in range(100):
         random_word = ''.join(
             random.choices(
                 string.ascii_uppercase + string.digits, 

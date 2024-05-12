@@ -19,7 +19,7 @@ const ChatToxicity = () => {
 
     const updateToxicityData = async (event) => {
         let ratingId = event.target.value;
-        if (ratingId == "default") {
+        if (ratingId === "default") {
             return;
         }
 
@@ -74,8 +74,8 @@ const ChatToxicity = () => {
             <Plot
                 data={[plotData]}
                 layout={{
-                    width: 600,
-                    height: 400,
+                    width: 1500,
+                    height: 800,
                     title: additionalPlotData.title,
                     xaxis: { title: additionalPlotData.xName },
                     yaxis: { title: additionalPlotData.yName }
