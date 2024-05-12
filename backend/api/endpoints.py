@@ -8,22 +8,47 @@ from typing import (
     Optional
 )
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from .models import (
     RatingInputModel,
-    RecommenderInputModel
+    RecommenderInputModel,
+    HeroInputModel
 )
 from data_analysis.heroes_recommender import Recommender
 from data_analysis.toxicity_classifier import ToxicityClassifier
 
+from sql_database import dal
+from sql_database import SessionLocal
+
 router = APIRouter()
 
-rec = Recommender()
-rec.update_data()
+# rec = Recommender()
+# rec.update_data()
 
-tox = ToxicityClassifier()
+# tox = ToxicityClassifier()
 
-# TODO maybe add endpoint for updating the data (for every chart)
+
+@router.post("/addHero")
+async def add_hero(data: HeroInputModel):
+    db = SessionLocal()
+    try:
+        dal.add_hero(db, data.id, data.hero_name)
+        return {"message": "Hero created successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create hero: {str(e)}")
+    finally:
+        db.close()
+
+
+@router.get("/getAllHeroes")
+async def get_all_heroes():
+    db = SessionLocal()
+    try:
+        all_heroes = dal.get_all_heroes(db)
+        print(all_heroes)
+        return all_heroes
+    finally:
+        db.close()
 
 @router.post("/getToxicityOverTime", response_model=Dict[str, List])
 async def get_toxicity_over_time(rating_input: RatingInputModel):

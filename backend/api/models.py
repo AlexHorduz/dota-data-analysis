@@ -8,3 +8,7 @@ class RatingInputModel(BaseModel):
 class RecommenderInputModel(BaseModel):
     games_played: Dict[int, int]
     N: Optional[int] = 3
+
+class HeroInputModel(BaseModel):
+    id: int
+    hero_name: str
