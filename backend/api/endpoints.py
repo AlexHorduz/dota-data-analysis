@@ -25,19 +25,28 @@ tox = ToxicityClassifier()
 
 # TODO maybe add endpoint for updating the data (for every chart)
 
-@router.post("/getToxicity", response_model=Dict[str, List])
-async def get_toxicity(rating_input: RatingInputModel):
+@router.post("/getToxicityOverTime", response_model=Dict[str, List])
+async def get_toxicity_over_time(rating_input: RatingInputModel):
+    # TODO get data from database
+    N = 10
+    toxicity = [random.randint(0, 100) for i in range(N)]
+    response = {
+        "toxicity": toxicity,
+        "names":  [str(year) for year in range(2010, 2010+N)]
+    }
+   
+    return response
+
+@router.post("/getToxicityOverRating", response_model=Dict[str, List])
+async def get_toxicity_over_rating():
     # TODO get data from database
     N = 10
     toxicity = [random.randint(0, 100) for i in range(N)]
     response = {
         "toxicity": toxicity
     }
-    if rating_input.rating:
-        response["names"] = [str(year) for year in range(2010, 2010+N)]
-    else:
-        step = 300
-        response["names"] = [f"{rating} - {rating+step}" for rating in range(0, step*N, step)]
+    step = 300
+    response["names"] = [f"{rating} - {rating+step}" for rating in range(0, step*N, step)]
     return response
 
 @router.get("/getWordsPopularity", response_model=List[Tuple[str, int]])
