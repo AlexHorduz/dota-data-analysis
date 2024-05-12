@@ -207,10 +207,10 @@ class UpdateService:
                     if not match["radiant_win"]:
                         heroes_combo_dict[heroes_tuple]["wins_count"] += 1
 
-        heroes_combo_model = []
+        heroes_combo_models = []
 
         for heroes_tuple, data in heroes_combo_dict.items():
-            hero_model = {
+            heroes_combo_model = {
                 "rating_id": rank_id,
                 "hero1_id": heroes_tuple[0],
                 "hero2_id": heroes_tuple[1],
@@ -218,21 +218,36 @@ class UpdateService:
                 "times_played": data["times_played"],
                 "wins_count": data["wins_count"]
             }
-            heroes_combo_model.append(HeroesComboData(**hero_model))
+            heroes_combo_models.append(HeroesComboData(**heroes_combo_model))
 
         db = SessionLocal()
 
         try:
-            db.add_all(heroes_combo_model)
+            db.add_all(heroes_combo_models)
             db.commit()
         finally:
             db.close()
 
-    def update_items_data(self, data, timestamp):
-        # TODO
-        pass
+    def update_items_data(self, data, hero_id, timestamp):
+        items_data_models = []
+        for category, category_data in data.items():
+            for item_str_id, games_count in category_data.items():
+                items_data_model = {
+                    "hero_id": hero_id,
+                    "item_id": int(item_str_id),
+                    "timestamp": timestamp,
+                    "category": category,
+                    "games_count": games_count
+                }
+                items_data_models.append(ItemsData(**items_data_model))
+        
+        db = SessionLocal()
+        try:
+            db.add_all(items_data_models)
+            db.commit()
+        finally:
+            db.close()
 
-    # TODO get data from parser
     def update_all_data(self):
         timestamp = datetime.datetime.now()
 
@@ -267,29 +282,8 @@ class UpdateService:
 
         for id in ALL_HEROES_IDS:
             items_data = self.parser.get_items_popularity(id)
-            self.update_items_data(items_data, timestamp)
+            self.update_items_data(items_data, id, timestamp)
         
 
-
-        
-
-        # db = SessionLocal()
-        # try:
-        #     dal.update_user_hero_table(db, data)
-        #     print("Updated")
-        # finally:
-        #     db.close()
-        
-
-# upd = UpdateService(SyntheticDataParser())
-data = [{
-            "user_id": 10,
-            "hero_id": 20,
-            "games_played": 5
-        }]
-
-# upd.update_user_games(data)
-
-# data[0]["games_played"] = 700
-
-# upd.update_user_games(data)
+        # TODO update toxicity data
+        # TODO update words popularity data

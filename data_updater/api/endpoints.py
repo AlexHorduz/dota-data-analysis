@@ -15,7 +15,6 @@ else:
     pars = OpenDotaParser()
 upd = UpdateService(pars)
 
-# TODO do separate method for each needed part (plot?)
 @router.post("/updateData")
 async def update_data():
     upd.update_all_data()
