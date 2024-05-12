@@ -1,7 +1,8 @@
 from typing import List, Tuple
+import random
 
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, select
 
 from .models import User, Hero, UserHeroGames
 
@@ -31,20 +32,16 @@ def get_games_played_by_user(db: Session, user_id: int):
 def get_games_played_by_hero(db: Session, hero_id: int):
     return db.query(UserHeroGames).filter(UserHeroGames.hero_id == hero_id).all()
 
-# TODO add try finally and proper DB usage. Also use user_hero_games
-def get_random_user_ids(session: Session, count: int) -> List[int]:
-    # Retrieve random user IDs from the database
+def get_random_user_ids_from_user_hero_games(session: Session, count: int) -> List[int]:
     random_user_ids = (
-        session.query(User.id)
-        .order_by(func.random())
-        .limit(count)
+        session.query(UserHeroGames.user_id)
+        .distinct()
         .all()
     )
-    return [user_id for (user_id,) in random_user_ids]
+    random_user_ids = random.sample(random_user_ids, count)
+    return [id for (id, ) in random_user_ids]
 
-# TODO add try finally and proper DB usage
 def get_hero_games_count_by_users(session: Session, user_ids: List[int]) -> List[UserHeroGames]:
-    # Retrieve games played by the selected users
     games_played = (
         session.query(UserHeroGames)
         .filter(UserHeroGames.user_id.in_(user_ids))

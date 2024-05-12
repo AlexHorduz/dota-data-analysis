@@ -5,13 +5,11 @@ import numpy as np
 from numpy.linalg import norm
 
 from sql_database.dal import (
-    get_random_user_ids,
+    get_random_user_ids_from_user_hero_games,
     get_hero_games_count_by_users,
     get_all_heroes_ids
 )
 from sql_database import SessionLocal
-from core.config import settings
-from constants import ALL_HEROES_IDS
 
 class Recommender:
     def __init__(self):
@@ -25,26 +23,24 @@ class Recommender:
         return self.heroes_similarity.copy(deep=True)
 
     def update_data(self, N = 1000):
-        if settings.DEBUG:
-            
-            all_heroes_ids = ALL_HEROES_IDS
-            num_of_heroes = len(all_heroes_ids)
-            random_values = np.random.randint(0, 500, (N, num_of_heroes))
-            self.interaction_matrix = pd.DataFrame(random_values, index=range(N), columns=all_heroes_ids)
-        else:
-            user_ids = get_random_user_ids(SessionLocal, N)
-            games = get_hero_games_count_by_users(SessionLocal, user_ids)
-            all_heroes_ids = get_all_heroes_ids(SessionLocal)
-            
-            self.interaction_matrix = pd.DataFrame(index=user_ids, columns=all_heroes_ids)
-            self.interaction_matrix.fillna(0, inplace=True)
+        db = SessionLocal()
 
-            for game in games:
-                self.interaction_matrix.loc[game.user_id, game.hero_id] = game.games_played
+        try:
+            all_heroes_ids = get_all_heroes_ids(db)
+            user_ids = get_random_user_ids_from_user_hero_games(db, N)
+            games = get_hero_games_count_by_users(db, user_ids)
+        finally:
+            db.close()
+        
+        self.interaction_matrix = pd.DataFrame(index=user_ids, columns=all_heroes_ids, dtype="int64")
+        self.interaction_matrix.fillna(0, inplace=True)
+
+        for game in games:
+            self.interaction_matrix.loc[game.user_id, game.hero_id] = game.games_played
 
         dot_product = np.dot(self.interaction_matrix.values.T, self.interaction_matrix.values)
-        norm_matrix1 = np.linalg.norm(self.interaction_matrix, axis=0)
-        norm_matrix2 = np.linalg.norm(self.interaction_matrix, axis=0)
+        norm_matrix1 = norm(self.interaction_matrix, axis=0)
+        norm_matrix2 = norm(self.interaction_matrix, axis=0)
         similarity = dot_product / (norm_matrix1[:, None] * norm_matrix2[None, :])
 
         self.heroes_similarity = pd.DataFrame(similarity, index=all_heroes_ids, columns=all_heroes_ids)

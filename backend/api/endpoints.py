@@ -22,8 +22,8 @@ from sql_database import SessionLocal
 
 router = APIRouter()
 
-# rec = Recommender()
-# rec.update_data()
+rec = Recommender()
+rec.update_data()
 
 # tox = ToxicityClassifier()
 
