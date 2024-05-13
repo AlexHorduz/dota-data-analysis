@@ -42,6 +42,7 @@ const HeroRecommendation = () => {
                             <p>{heroes_data[id].name}</p>
                         </div>
                     ))}
+                    {/* TODO refer to the items recommendation page after the recommendation is done */}
                 </div>
                 <div className="submit-button" onClick={handleSubmit}>Get recommendations</div>
                 <p className="instructions">Enter the number of games played on each hero</p>
