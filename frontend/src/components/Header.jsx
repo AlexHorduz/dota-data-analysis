@@ -11,7 +11,7 @@ const Header = () => {
                 <Link to="/winrateAnalysis" className="nav-button">Winrate analysis</Link>
                 <Link to="/chatAnalysis" className="nav-button">Chat analysis</Link>
                 <Link to="/heroPopularity" className="nav-button">Hero popularity</Link>
-                <Link to="/itemsPopularity" className="nav-button">Items popularity</Link>
+                <Link to="/itemsRecommendation" className="nav-button">Items recommendation</Link>
             </nav>
         </header>
     );

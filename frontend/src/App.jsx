@@ -5,7 +5,7 @@ import MainPage from './components/MainPage'
 import HeroPopularity from './components/HeroPopularity';
 import HeroRecommendation from './components/HeroRecommendation';
 import ChatAnalysis from './components/ChatAnalysis'
-import ItemsPopularity from './components/ItemsPopularity';
+import ItemsRecommendation from './components/ItemsRecommendation';
 import WinrateAnalysis from './components/WinrateAnalysis';
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
                         <Route path="/winrateAnalysis" element={<WinrateAnalysis />} />
                         <Route path="/chatAnalysis" element={<ChatAnalysis />} />
                         <Route path="/heroPopularity" element={<HeroPopularity />} />
-                        <Route path="/itemsPopularity" element={<ItemsPopularity />} />
+                        <Route path="/itemsRecommendation" element={<ItemsRecommendation />} />
                     </Routes>
                 </main>
             </div>

@@ -2,7 +2,8 @@ from fastapi import APIRouter
 
 from .models import (
     RatingInputModel,
-    RecommenderInputModel
+    RecommenderInputModel,
+    HeroIdInputModel
 )
 from . import endpoints
 

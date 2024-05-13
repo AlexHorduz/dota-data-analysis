@@ -12,3 +12,6 @@ class RecommenderInputModel(BaseModel):
 class HeroInputModel(BaseModel):
     id: int
     hero_name: str
+
+class HeroIdInputModel(BaseModel):
+    id: int

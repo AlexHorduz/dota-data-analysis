@@ -16,7 +16,6 @@ const HeroRecommendation = () => {
     const [recommendations, setRecommendations] = useState([])
 
     const handleChange = (heroId, value) => {
-        console.log("Updating", heroId, "to", value);
         let gamesPlayedCopy = { ...gamesPlayed, [heroId]: value };
         if (value == 0) {
             delete gamesPlayedCopy[heroId];

@@ -12,7 +12,7 @@ from fastapi import APIRouter, HTTPException
 from .models import (
     RatingInputModel,
     RecommenderInputModel,
-    HeroInputModel
+    HeroIdInputModel
 )
 from data_analysis.heroes_recommender import Recommender
 from data_analysis.toxicity_classifier import ToxicityClassifier
@@ -39,7 +39,37 @@ async def get_heroes_popularity(rating_input: RatingInputModel):
 
     return response
 
-    
+
+
+@router.post("/getItemsPopularity")
+async def get_items_popularity(id_input: HeroIdInputModel):
+    id = id_input.id
+
+    db = SessionLocal()
+    try:
+        items = dal.get_items_data(db, id)
+    finally:
+        db.close()
+
+    response = dict()
+
+    for item in items:
+        category = item.category
+        response[category] = response.get(category, [])
+
+        response[category].append([
+            item.item_id,
+            item.games_count
+        ])
+
+    for category in response.keys():
+        response[category] = sorted(
+            response[category],
+            key=lambda pair: pair[1],
+            reverse=True
+        )
+
+    return response
 
 @router.post("/getToxicityOverTime", response_model=Dict[str, List])
 async def get_toxicity_over_time(rating_input: RatingInputModel):

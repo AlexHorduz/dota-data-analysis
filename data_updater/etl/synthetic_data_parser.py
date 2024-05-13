@@ -1,6 +1,8 @@
 from typing import List, Dict
 import random
 
+import requests
+
 from .data_parser import DataParser
 import sys
 
@@ -27,14 +29,17 @@ class SyntheticDataParser(DataParser):
         return rating
     
     def get_items_popularity(self, hero_id)-> Dict[str, Dict[str, int]]:
-        categories = ["start_game_items", "early_game_items", "mid_game_items", "late_game_items"]
-        response = dict()
-        for cat in categories:
-            number_of_items = random.randint(5, 15)
-            curr_items = dict()
-            for i in range(number_of_items):
-                curr_items[str(random.choice(ALL_ITEMS_IDS))] = random.randint(1, 150)
-            response[cat] = curr_items
+        # categories = ["start_game_items", "early_game_items", "mid_game_items", "late_game_items"]
+        # response = dict()
+        # for cat in categories:
+        #     number_of_items = random.randint(5, 15)
+        #     curr_items = dict()
+        #     for i in range(number_of_items):
+        #         curr_items[str(random.choice(ALL_ITEMS_IDS))] = random.randint(1, 150)
+        #     response[cat] = curr_items
+        # return response
+        open_dota_url = "https://api.opendota.com/api"
+        response = requests.get(f"{open_dota_url}/heroes/{hero_id}/itemPopularity").json()
         return response
     
     def get_public_matches(self, min_rating_id: int = None, max_rating_id: int = None) -> List[Dict]:

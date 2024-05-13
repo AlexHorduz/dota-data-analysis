@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 import random
 
 from sqlalchemy.orm import Session
@@ -7,12 +7,26 @@ from sqlalchemy.sql import func, select
 from .models import (
     Hero, 
     UserHeroGames,
-    HeroesData
+    HeroesData,
+    ItemsData
 )
 
+def get_items_data(session: Session, hero_id: int):
+    subquery = (
+        session.query(func.max(ItemsData.timestamp).label("max_timestamp"))
+        .subquery()
+    )
 
+    result = (
+        session.query(ItemsData)
+        .join(subquery, subquery.c.max_timestamp == ItemsData.timestamp)
+        .filter(ItemsData.hero_id == hero_id)
+        .all()
+    )
 
-def get_heroes_data(session: Session, rating_id: int):
+    return result
+
+def get_heroes_data(session: Session, rating_id: Optional[int]):
     subquery = (
         session.query(func.max(HeroesData.timestamp).label("max_timestamp"))
         .subquery()
@@ -20,14 +34,14 @@ def get_heroes_data(session: Session, rating_id: int):
     if rating_id:
         result = (
             session.query(HeroesData)
-            .join(subquery, subquery.c.max_timestamp == HeroesData.timestamp)\
-            .filter(HeroesData.rating_id == rating_id)\
+            .join(subquery, subquery.c.max_timestamp == HeroesData.timestamp)
+            .filter(HeroesData.rating_id == rating_id)
             .all()
         )
     else:
         result = (
             session.query(HeroesData)
-            .join(subquery, subquery.c.max_timestamp == HeroesData.timestamp)\
+            .join(subquery, subquery.c.max_timestamp == HeroesData.timestamp)
             .all()
         )
 

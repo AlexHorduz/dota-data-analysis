@@ -3,6 +3,7 @@ import datetime
 import json
 import random
 import string
+import time
 
 from sqlalchemy import func
 
@@ -281,8 +282,11 @@ class UpdateService:
 
 
         for id in ALL_HEROES_IDS:
+            # print(id)
             items_data = self.parser.get_items_popularity(id)
+            # print(items_data)
             self.update_items_data(items_data, id, timestamp)
+            time.sleep(1.5)
         
 
         # TODO update toxicity data
