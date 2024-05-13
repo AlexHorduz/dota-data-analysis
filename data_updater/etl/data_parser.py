@@ -12,3 +12,6 @@ class DataParser:
 
     def get_public_matches(self, min_rating_id: int = None, max_rating_id: int = None) -> List[Dict]:
         pass
+
+    def get_chat_messages(self, rank_id: int = None, N: int = 50):
+        pass

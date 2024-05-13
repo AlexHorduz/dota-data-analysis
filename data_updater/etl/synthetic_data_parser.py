@@ -2,16 +2,20 @@ from typing import List, Dict
 import random
 
 import requests
+import pandas as pd
 
 from .data_parser import DataParser
 import sys
 
 sys.path.append("./")
 
-from constants import ALL_HEROES_IDS, ALL_ITEMS_IDS
+from constants import ALL_HEROES_IDS
 
 
 class SyntheticDataParser(DataParser):
+    def __init__(self):
+        self.chats_dataset = pd.read_csv("tagged-data.csv")
+
     def get_user_heroes_games(self, account_id) -> List[Dict[str, int]]:
         response = []
         for id in random.sample(ALL_HEROES_IDS, random.randint(5, 50)):
@@ -29,18 +33,18 @@ class SyntheticDataParser(DataParser):
         return rating
     
     def get_items_popularity(self, hero_id)-> Dict[str, Dict[str, int]]:
-        # categories = ["start_game_items", "early_game_items", "mid_game_items", "late_game_items"]
-        # response = dict()
-        # for cat in categories:
-        #     number_of_items = random.randint(5, 15)
-        #     curr_items = dict()
-        #     for i in range(number_of_items):
-        #         curr_items[str(random.choice(ALL_ITEMS_IDS))] = random.randint(1, 150)
-        #     response[cat] = curr_items
-        # return response
-        open_dota_url = "https://api.opendota.com/api"
-        response = requests.get(f"{open_dota_url}/heroes/{hero_id}/itemPopularity").json()
+        categories = ["start_game_items", "early_game_items", "mid_game_items", "late_game_items"]
+        response = dict()
+        for cat in categories:
+            number_of_items = random.randint(5, 15)
+            curr_items = dict()
+            for i in range(number_of_items):
+                curr_items[str(random.choice(ALL_ITEMS_IDS))] = random.randint(1, 150)
+            response[cat] = curr_items
         return response
+        # open_dota_url = "https://api.opendota.com/api"
+        # response = requests.get(f"{open_dota_url}/heroes/{hero_id}/itemPopularity").json()
+        # return response
     
     def get_public_matches(self, min_rating_id: int = None, max_rating_id: int = None) -> List[Dict]:
         N = 10_000
@@ -54,11 +58,6 @@ class SyntheticDataParser(DataParser):
                 "dire_heroes": heroes[5:],
             })
         return response
-
-# pars = SyntheticDataParser()
-# 76561199097772774
-
-# print(pars.get_user_heroes_games(76561199097772774))
-# print(pars.get_user_last_rating(76561199097772774))
-# print(pars.get_items_popularity(1))
-# print(pars.get_public_matches(min_rating_id=15))
+    
+    def get_chat_messages(self, rank_id: int = None, N: int = 50):
+        return pd.DataFrame(self.chats_dataset["text"]).sample(N)

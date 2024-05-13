@@ -3,12 +3,17 @@ import datetime
 import json
 import random
 import string
+from collections import Counter
 import time
 
+import nltk
+from nltk.corpus import stopwords
+import profanity_check
 from sqlalchemy import func
+import pandas as pd
 
+from etl.toxicity_classifier import ToxicityClassifier
 from .data_parser import DataParser
-from sql_database import dal
 from sql_database import SessionLocal
 from sql_database.models import (
     Hero,
@@ -18,9 +23,12 @@ from sql_database.models import (
     UserHeroGames,
     HeroesData,
     HeroesComboData,
-    ItemsData
+    ItemsData,
+    ChatToxicity,
+    WordsPopularity
 )
-from constants import ALL_HEROES_IDS
+from constants import ALL_HEROES_IDS, ALL_ITEMS_IDS
+
 
 def get_random_string():
     return ''.join(
@@ -33,6 +41,7 @@ def get_random_string():
 class UpdateService:
     def __init__(self, parser: DataParser):
         self.parser = parser
+        self.toxicity_classifier = ToxicityClassifier()
         self.ranks_ranges = [(min_rating, min_rating+5) for min_rating in range(10, 81, 10)]
 
         with open('heroes.json') as json_file:
@@ -90,6 +99,9 @@ class UpdateService:
             db.query(HeroesComboData).delete()
             db.query(ItemsData).delete()
 
+            db.query(WordsPopularity).delete()
+            db.query(ChatToxicity).delete()
+
             db.query(Hero).delete()
             db.add_all(heroes)
 
@@ -109,7 +121,7 @@ class UpdateService:
             db.close()
 
 
-
+    
     
     def update_user_heroes_table(self, data: Dict[str, List[Dict[str, int]]]):   
         model_data = []
@@ -249,6 +261,62 @@ class UpdateService:
         finally:
             db.close()
 
+    def update_toxicity_data(self, messages: List[str], rank_id: int, timestamp):
+        toxicity = self.toxicity_classifier.getToxicityPercentage(messages["text"].values)
+        db = SessionLocal()
+        try:
+            db.add(ChatToxicity(**{
+                "rating_id": rank_id,
+                "timestamp": timestamp,
+                "toxicity": toxicity,
+            }))
+            db.commit()
+        finally:
+            db.close()
+
+
+    def update_words_popularity_data(self, messages: pd.Series, rank_id: int, timestamp):
+        stop_words = set(stopwords.words('english'))
+
+        def tokenize_and_remove_stopwords(text):
+            tokens = nltk.word_tokenize(text)
+            filtered_tokens = [word for word in tokens if word not in stop_words]
+            return filtered_tokens
+
+
+        messages["tokenized_text"] = messages["text"].str.translate(str.maketrans('', '', string.punctuation + '0123456789'))
+        messages["tokenized_text"] = messages["tokenized_text"].str.lower()
+        messages['tokenized_text'] = messages['tokenized_text'].apply(tokenize_and_remove_stopwords)
+        
+        words_list = [word for sublist in messages['tokenized_text'] for word in sublist]
+
+        word_counts = Counter(words_list)
+        sorted_word_counts = sorted(word_counts.items(), key=lambda x: x[1], reverse=True)
+        
+        profanity_score = profanity_check.predict([word for (word, count) in sorted_word_counts])
+        sorted_word_counts = [
+            sorted_word_counts[i] for i in range(len(word_counts)) if profanity_score[i] == 0
+        ]
+
+        words_popularity_models = []
+
+        for word, count in sorted_word_counts:
+            words_popularity_model = {
+                "rating_id": rank_id,
+                "timestamp": timestamp,
+                "word": word,
+                "times_used": count
+            }
+            words_popularity_models.append(WordsPopularity(**words_popularity_model))
+
+        db = SessionLocal()
+        try:
+            db.add_all(words_popularity_models)
+            db.commit()
+        finally:
+            db.close()
+            
+
     def update_all_data(self):
         timestamp = datetime.datetime.now()
 
@@ -280,14 +348,13 @@ class UpdateService:
             self.update_heroes_data(matches, id, timestamp)
             self.update_heroes_combo_data(matches, id, timestamp)
 
+        for id, ranges in ranks_ranges.items():
+            messages = self.parser.get_chat_messages(id)
+            self.update_toxicity_data(messages, id, timestamp)
+            messages = self.parser.get_chat_messages(id, 800)
+            self.update_words_popularity_data(messages, id, timestamp)
 
         for id in ALL_HEROES_IDS:
-            # print(id)
             items_data = self.parser.get_items_popularity(id)
-            # print(items_data)
             self.update_items_data(items_data, id, timestamp)
-            time.sleep(1.5)
-        
-
-        # TODO update toxicity data
-        # TODO update words popularity data
+            # time.sleep(1.5)

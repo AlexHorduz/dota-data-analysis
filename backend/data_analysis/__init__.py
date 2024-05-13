@@ -1,2 +1,1 @@
 from .heroes_recommender import Recommender
-from .toxicity_classifier import ToxicityClassifier

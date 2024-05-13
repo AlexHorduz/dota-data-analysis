@@ -46,7 +46,7 @@ class ChatToxicity(Base):
     timestamp = Column(TIMESTAMP)
     toxicity = Column(Float)
 
-class WordPopularity(Base):
+class WordsPopularity(Base):
     __tablename__ = "words_popularity"
 
     id = Column(Integer, primary_key=True, index=True)

@@ -15,7 +15,6 @@ from .models import (
     HeroIdInputModel
 )
 from data_analysis.heroes_recommender import Recommender
-from data_analysis.toxicity_classifier import ToxicityClassifier
 
 from sql_database import dal
 from sql_database import SessionLocal
@@ -24,8 +23,6 @@ router = APIRouter()
 
 rec = Recommender()
 rec.update_data()
-
-# tox = ToxicityClassifier()
 
 @router.post("/getHeroesPopularity")
 async def get_heroes_popularity(rating_input: RatingInputModel):
