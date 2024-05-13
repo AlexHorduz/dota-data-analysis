@@ -33,19 +33,9 @@ const ChatWordsPopularity = () => {
         }
 
         try {
-            let params = {}
-            if (ratingId === null) {
-                params = {
-                    "rating": ratingId
-                }
-            }
-            const response = await axios.get(
-                `${process.env.REACT_APP_BACKEND_URL}/getWordsPopularity`,
-                {
-                    "params": params
-                });
-
-            setCloudData(response.data.slice(0, 50).map((pair) => ({
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getWordsPopularity`, {"rating": parseInt(ratingId)});
+            console.log(response.data)
+            setCloudData(response.data.slice(0, 60).map((pair) => ({
                 text: pair[0],
                 value: pair[1]
             })))

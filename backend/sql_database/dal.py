@@ -8,8 +8,32 @@ from .models import (
     Hero, 
     UserHeroGames,
     HeroesData,
-    ItemsData
+    ItemsData,
+    WordsPopularity
 )
+
+def get_words_popularity_data(session: Session, rating_id: Optional[int]):
+    subquery = (
+        session.query(func.max(WordsPopularity.timestamp).label("max_timestamp"))
+        .subquery()
+    )
+
+    if rating_id:
+        result = (
+            session.query(WordsPopularity)
+            .join(subquery, subquery.c.max_timestamp == WordsPopularity.timestamp)
+            .filter(WordsPopularity.rating_id == rating_id)
+            .all()
+        )
+    else:
+        result = (
+            session.query(WordsPopularity)
+            .join(subquery, subquery.c.max_timestamp == WordsPopularity.timestamp)
+            .all()
+        )
+
+    return result
+
 
 def get_items_data(session: Session, hero_id: int):
     subquery = (
@@ -25,6 +49,7 @@ def get_items_data(session: Session, hero_id: int):
     )
 
     return result
+
 
 def get_heroes_data(session: Session, rating_id: Optional[int]):
     subquery = (
