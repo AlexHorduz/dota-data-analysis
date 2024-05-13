@@ -9,7 +9,7 @@ import sys
 
 sys.path.append("./")
 
-from constants import ALL_HEROES_IDS
+from constants import ALL_HEROES_IDS, ALL_ITEMS_IDS
 
 
 class SyntheticDataParser(DataParser):
