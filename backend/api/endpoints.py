@@ -1,14 +1,9 @@
 
-import string
-import random
 from typing import (
     List,
-    Dict,
-    Tuple,
-    Optional
 )
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from .models import (
     RatingInputModel,
     RecommenderInputModel,
@@ -23,6 +18,7 @@ router = APIRouter()
 
 rec = Recommender()
 rec.update_data()
+
 
 @router.post("/getWordsPopularity")
 async def get_words_popularity(rating_input: RatingInputModel):
@@ -46,6 +42,7 @@ async def get_words_popularity(rating_input: RatingInputModel):
 
     return response
 
+
 @router.post("/getHeroesPopularity")
 async def get_heroes_popularity(rating_input: RatingInputModel):
     rank_id = rating_input.rating
@@ -57,7 +54,6 @@ async def get_heroes_popularity(rating_input: RatingInputModel):
         db.close()
 
     return response
-
 
 
 @router.post("/getItemsPopularity")
@@ -90,29 +86,60 @@ async def get_items_popularity(id_input: HeroIdInputModel):
 
     return response
 
-@router.post("/getToxicityOverTime", response_model=Dict[str, List])
+
+@router.post("/getToxicityOverTime")
 async def get_toxicity_over_time(rating_input: RatingInputModel):
-    # TODO get data from database
-    N = 10
-    toxicity = [random.randint(0, 100) for i in range(N)]
-    response = {
-        "toxicity": toxicity,
-        "names":  [str(year) for year in range(2010, 2010+N)]
-    }
-   
+    id = rating_input.rating
+
+    db = SessionLocal()
+    try:
+        toxicity_data = dal.get_toxicity_for_rank(db, id)
+    finally:
+        db.close()
+
+    timestamp_toxicity = dict()
+
+    for row in toxicity_data:
+        timestamp = row.timestamp
+        timestamp_toxicity[timestamp] = timestamp_toxicity.get(timestamp, [0, 0])
+
+        timestamp_toxicity[timestamp][0] += row.toxicity
+        timestamp_toxicity[timestamp][1] += 1
+
+    for timestamp in timestamp_toxicity.keys():
+        toxicity_sum, count = timestamp_toxicity[timestamp]
+        timestamp_toxicity[timestamp] = toxicity_sum / count
+        
+    response = timestamp_toxicity.items()
+    response = sorted(
+        response,
+        key = lambda pair: pair[0],
+        reverse=False
+    )
     return response
 
-@router.post("/getToxicityOverRating", response_model=Dict[str, List])
+
+@router.get("/getToxicityOverRating")
 async def get_toxicity_over_rating():
-    # TODO get data from database
-    N = 10
-    toxicity = [random.randint(0, 100) for i in range(N)]
-    response = {
-        "toxicity": toxicity
-    }
-    step = 300
-    response["names"] = [f"{rating} - {rating+step}" for rating in range(0, step*N, step)]
+    db = SessionLocal()
+    try:
+        toxicity_data = dal.get_last_toxicity_data(db)
+    finally:
+        db.close()
+
+    response = [
+        (row.rating_id, row.toxicity)
+        for row in toxicity_data
+    ]
+
+    response = sorted(
+        response,
+        key = lambda pair: pair[0],
+        reverse=False
+    )
+
     return response
+
 
 @router.post("/getHeroesRecommendation", response_model=List[int])
 async def get_heroes_recommendation(data: RecommenderInputModel):

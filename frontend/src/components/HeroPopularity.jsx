@@ -4,6 +4,12 @@ import '../styles/HeroPopularity.css'
 import Plot from 'react-plotly.js';
 import axios from 'axios';
 
+const ratingMapping = {}
+for (let i = 1; i < 9; i++) {
+    ratingMapping[i] = `${i * 300} - ${(i + 1) * 300}`
+}
+
+
 let heroes_data = {};
 for (const key in heroes_raw_data) {
     heroes_data[heroes_raw_data[key].id] = {
@@ -54,7 +60,7 @@ const HeroPopularity = () => {
             heroStats = Object.entries(heroStats).sort((a, b) => b[1] - a[1]);
 
             heroStats = heroStats.slice(0, 20);
-            
+
             // Step 4: Extract hero_id and times_played for top 20 heroes
             const X = [];
             const Y = [];
@@ -73,14 +79,14 @@ const HeroPopularity = () => {
             console.log("Updated", updatedPlotData)
             console.log("Current", plotData)
 
-            let updatedAdditionalPlotData = {...additionalPlotData};
+            let updatedAdditionalPlotData = { ...additionalPlotData };
             updatedAdditionalPlotData.tickvals = X
             updatedAdditionalPlotData.ticktext = X.map((id) => (
                 // `<img src="${heroes_data[id].image}" />`
                 heroes_data[id].name
             ));
             // console.log(updatedAdditionalPlotData)
-            
+
 
             setAdditionalPlotData(updatedAdditionalPlotData);
         } catch (error) {
@@ -94,11 +100,9 @@ const HeroPopularity = () => {
             <select className="rating-dropdown" onChange={updatePlotData}>
                 <option value="default">Select the rating ranges</option>
                 <option value="">All ratings</option>
-                {/* TODO add good ratings */}
-                <option value="1">Rating ID 1</option>
-                <option value="2">Rating ID 2</option>
-                <option value="3">Rating ID 3</option>
-                <option value="4">Rating ID 4</option>
+                {Object.keys(ratingMapping).map(key => (
+                    <option value={key}>{ratingMapping[key]}</option>
+                ))}
             </select>
             <br />
             <Plot

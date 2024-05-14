@@ -43,6 +43,7 @@ class UpdateService:
         self.parser = parser
         self.toxicity_classifier = ToxicityClassifier()
         self.ranks_ranges = [(min_rating, min_rating+5) for min_rating in range(10, 81, 10)]
+        self.updated_items_data = False
 
         with open('heroes.json') as json_file:
             heroes = json.load(json_file)
@@ -119,6 +120,9 @@ class UpdateService:
 
         finally:
             db.close()
+
+        for i in range(6):
+            self.update_all_data()
 
 
     
@@ -318,6 +322,7 @@ class UpdateService:
             
 
     def update_all_data(self):
+        print("Updating the data")
         timestamp = datetime.datetime.now()
 
         users_account_ids  = []
@@ -354,7 +359,9 @@ class UpdateService:
             messages = self.parser.get_chat_messages(id, 800)
             self.update_words_popularity_data(messages, id, timestamp)
 
-        for id in ALL_HEROES_IDS:
-            items_data = self.parser.get_items_popularity(id)
-            self.update_items_data(items_data, id, timestamp)
-            # time.sleep(1.5)
+        if not self.updated_items_data:
+            for id in ALL_HEROES_IDS:
+                items_data = self.parser.get_items_popularity(id)
+                self.update_items_data(items_data, id, timestamp)
+                # time.sleep(1.5)
+            self.updated_items_data = True

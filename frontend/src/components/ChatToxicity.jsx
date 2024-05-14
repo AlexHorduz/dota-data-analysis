@@ -2,12 +2,19 @@ import React, { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
 import axios from 'axios';
 
+
+const ratingMapping = {}
+
+for (let i = 1; i < 9; i++) {
+    ratingMapping[i] = `${i * 300} - ${(i + 1) * 300}`
+}
+
 const ChatToxicity = () => {
     const [plot1Data, setPlot1Data] = useState({
         x: [],
         y: [],
-        type: "",
-        mode: ""
+        type: "scatter",
+        mode: "lines+markers"
     })
 
     const additionalPlot1Data = {
@@ -15,7 +22,7 @@ const ChatToxicity = () => {
         xName: "Time",
         yName: "Toxicity rate, %"
     }
-    
+
     const [plot2Data, setPlot2Data] = useState({
         x: [],
         y: [],
@@ -31,13 +38,18 @@ const ChatToxicity = () => {
 
     const getPlot2Data = async () => {
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getToxicityOverRating`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/getToxicityOverRating`);
             let updatedPlotData = {
-                x: response.data.names,
-                y: response.data.toxicity,
+                x: [],
+                y: [],
                 type: "scatter",
                 mode: "lines+markers"
             }
+
+            updatedPlotData.x = response.data.map((pair) => pair[0])
+                .map((rating_id) => ratingMapping[rating_id]);
+            updatedPlotData.y = response.data.map((pair) => pair[1])
+
             setPlot2Data(updatedPlotData);
         } catch (error) {
             console.error('Error fetching toxicity:', error);
@@ -49,7 +61,7 @@ const ChatToxicity = () => {
     }, []);
 
 
-    
+
 
     const updatePlot1Data = async (event) => {
         let ratingId = event.target.value;
@@ -63,12 +75,12 @@ const ChatToxicity = () => {
 
         try {
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getToxicityOverTime`, { "rating": ratingId });
-            let updatedPlotData = {
-                x: response.data.names,
-                y: response.data.toxicity,
-                type: "scatter",
-                mode: "lines+markers"
-            }
+            console.log(response.data)
+            let updatedPlotData = { ...plot1Data };
+
+            updatedPlotData.x = response.data.map((pair) => pair[0]);
+            updatedPlotData.y = response.data.map((pair) => pair[1]);
+
             setPlot1Data(updatedPlotData);
         } catch (error) {
             console.error('Error fetching toxicity:', error);
@@ -81,10 +93,9 @@ const ChatToxicity = () => {
             <select className="rating-dropdown" onChange={updatePlot1Data}>
                 <option value="default">Select the rating ranges</option>
                 <option value="">All ratings</option>
-                <option value="10">Rating ID 1</option>
-                <option value="20">Rating ID 2</option>
-                <option value="30">Rating ID 3</option>
-                <option value="40">Rating ID 4</option>
+                {Object.keys(ratingMapping).map(key => (
+                    <option value={key}>{ratingMapping[key]}</option>
+                ))}
             </select>
             <br />
             <div style={{ display: 'flex' }}>

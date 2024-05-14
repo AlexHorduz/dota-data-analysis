@@ -9,8 +9,40 @@ from .models import (
     UserHeroGames,
     HeroesData,
     ItemsData,
-    WordsPopularity
+    WordsPopularity,
+    ChatToxicity
 )
+
+def get_last_toxicity_data(session: Session):
+    subquery = (
+        session.query(func.max(ChatToxicity.timestamp).label("max_timestamp"))
+        .subquery()
+    )
+
+    result = (
+        session.query(ChatToxicity)
+        .join(subquery, subquery.c.max_timestamp == ChatToxicity.timestamp)
+        .all()
+    )
+
+    return result
+
+def get_toxicity_for_rank(session: Session, rating_id: Optional[int]):
+    if rating_id:
+        result = (
+            session.query(ChatToxicity)
+            .filter(ChatToxicity.rating_id == rating_id)
+            .all()
+        )
+    else:
+        result = (
+            session.query(ChatToxicity)
+            .all()
+        )
+
+    return result
+
+    
 
 def get_words_popularity_data(session: Session, rating_id: Optional[int]):
     subquery = (

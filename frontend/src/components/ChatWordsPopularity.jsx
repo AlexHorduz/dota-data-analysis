@@ -3,6 +3,12 @@ import Plot from 'react-plotly.js';
 import axios from 'axios';
 import ReactWordcloud from 'react-wordcloud';
 
+
+const ratingMapping = {}
+for (let i = 1; i < 9; i++) {
+    ratingMapping[i] = `${i * 300} - ${(i + 1) * 300}`
+}
+
 const ChatWordsPopularity = () => {
     const [cloudData, setCloudData] = useState([]);
 
@@ -33,7 +39,7 @@ const ChatWordsPopularity = () => {
         }
 
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getWordsPopularity`, {"rating": parseInt(ratingId)});
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getWordsPopularity`, { "rating": parseInt(ratingId) });
             console.log(response.data)
             setCloudData(response.data.slice(0, 60).map((pair) => ({
                 text: pair[0],
@@ -58,31 +64,44 @@ const ChatWordsPopularity = () => {
         }
     };
 
+    // const [options, setOptions] = useState({});
+
+
+    const [options, setOptions] = useState({
+        colors: ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"],
+        enableTooltip: true,
+        deterministic: false,
+        fontFamily: "impact",
+        fontSizes: [5, 60],
+        fontStyle: "normal",
+        fontWeight: "normal",
+        padding: 1,
+        rotations: 3,
+        rotationAngles: [0, 45, 90],
+        scale: "sqrt",
+        spiral: "archimedean",
+        transitionDuration: 400
+    });
 
     return (
         <div>
             <h2> Popularity </h2>
             <select class="rating-dropdown" onChange={updateWordsPopularityData}>
-                <option value="default">Select  the rating ranges</option>
+                <option value="default">Select the rating ranges</option>
                 <option value="">All ratings</option>
-                <option value="10">Rating ID 1</option>
-                <option value="20">Rating ID 2</option>
-                <option value="30">Rating ID 3</option>
-                <option value="40">Rating ID 4</option>
+                {Object.keys(ratingMapping).map(key => (
+                    <option value={key}>{ratingMapping[key]}</option>
+                ))}
             </select>
             <br />
             <div style={{ display: 'flex' }}>
                 <div style={{ flex: '50%' }}>
-                    <ReactWordcloud
-                        size={[600, 400]}
-                        words={cloudData}
-                        style={{ fontFamily: 'Arial', color: 'blue' }}
-                        options={{
-                            rotations: 2,
-                            rotationAngles: [-30, 0],
-                            transitionDuration: 50
-                        }}
-                    />
+                    <div style={{ height: 400, width: 600 }}>
+                        <ReactWordcloud
+                            words={cloudData}
+                            options={options}
+                        />
+                    </div>
                 </div>
                 <div style={{ flex: '50%' }}>
                     <Plot
