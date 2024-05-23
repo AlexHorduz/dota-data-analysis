@@ -20,19 +20,19 @@ const ChatAnalysis = () => {
 
     return (
         <div>
-            <h1> Chat analysis </h1>
+            <h1> Аналіз чату </h1>
             <div className='button-container'>
                 <div
                     onClick={showToxicity}
                     className={`button ${toShowToxicity ? 'disabled' : ''}`}
                 >
-                    Show toxicity analysis
+                    Показати аналіз токсичності
                 </div>
                 <div
                     onClick={showWordsPopularity}
                     className={`button ${toShowWordsPopularity ? 'disabled' : ''}`}
                 >
-                    Show words popularity
+                    Показати аналіз популярності слів
                 </div>
             </div>
 

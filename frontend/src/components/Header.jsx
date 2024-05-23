@@ -6,12 +6,12 @@ const Header = () => {
     return (
         <header className="page-header">
             <nav className="nav-container">
-                <Link to="/" className="nav-button">Main page</Link>
-                <Link to="/heroRecommendation" className="nav-button">Hero recommendation</Link>
-                <Link to="/winrateAnalysis" className="nav-button">Winrate analysis</Link>
-                <Link to="/chatAnalysis" className="nav-button">Chat analysis</Link>
-                <Link to="/heroPopularity" className="nav-button">Hero popularity</Link>
-                <Link to="/itemsRecommendation" className="nav-button">Items recommendation</Link>
+                <Link to="/" className="nav-button">Головна сторінка</Link>
+                <Link to="/heroRecommendation" className="nav-button">Рекомендації героїв</Link>
+                <Link to="/winrateAnalysis" className="nav-button">Аналіз по відсотку перемог</Link>
+                <Link to="/chatAnalysis" className="nav-button">Аналіз чату</Link>
+                <Link to="/heroPopularity" className="nav-button">Популярність героїв</Link>
+                <Link to="/itemsRecommendation" className="nav-button">Рекомендації речей</Link>
             </nav>
         </header>
     );

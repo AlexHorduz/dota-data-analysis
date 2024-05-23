@@ -33,7 +33,7 @@ const HeroRecommendation = () => {
 
     return (
         <div>
-            <h1> Hero recommendation </h1>
+            <h1> Рекомендації героїв </h1>
             <form>
                 <div className="hero-grid">
                     {recommendations.map((id) => (
@@ -44,8 +44,8 @@ const HeroRecommendation = () => {
                     ))}
                     {/* TODO refer to the items recommendation page after the recommendation is done */}
                 </div>
-                <div className="submit-button" onClick={handleSubmit}>Get recommendations</div>
-                <p className="instructions">Enter the number of games played on each hero</p>
+                <div className="submit-button" onClick={handleSubmit}>Отримати рекомендації</div>
+                <p className="instructions">Введіть кількість зіграних ігор на кожному з героїв</p>
                 <div className="hero-grid">
                     {Object.keys(heroes_data).map((id) => (
                         <div key={id} className="hero-item">

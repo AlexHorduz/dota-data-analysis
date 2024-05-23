@@ -28,9 +28,9 @@ const HeroPopularity = () => {
     })
 
     const [additionalPlotData, setAdditionalPlotData] = useState({
-        title: "Most popular heroes",
-        xName: "Hero",
-        yName: "Games"
+        title: "Найпопулярніші герої",
+        xName: "Герой",
+        yName: "Кількість ігор"
     })
 
     const updatePlotData = async (event) => {
@@ -96,10 +96,10 @@ const HeroPopularity = () => {
 
     return (
         <div>
-            <h1> Popular heroes </h1>
+            <h1> Популярність героїв </h1>
             <select className="rating-dropdown" onChange={updatePlotData}>
-                <option value="default">Select the rating ranges</option>
-                <option value="">All ratings</option>
+                <option value="default">Виберіть діапазон рейтингу</option>
+                <option value="">Весь рейтинг</option>
                 {Object.keys(ratingMapping).map(key => (
                     <option value={key}>{ratingMapping[key]}</option>
                 ))}

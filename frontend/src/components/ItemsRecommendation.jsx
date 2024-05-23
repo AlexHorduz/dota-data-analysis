@@ -35,10 +35,10 @@ for (const key in heroes_raw_data) {
 }
 
 const categories_mapper = {
-    "start_game_items": "Start game items",
-    "early_game_items": "Early game items",
-    "mid_game_items": "Mid game items",
-    "late_game_items": "Late game items"
+    "start_game_items": "Стартові речі",
+    "early_game_items": "Речі для початку гри",
+    "mid_game_items": "Речі для середини гри",
+    "late_game_items": "Речі для затяжної гри"
 }
 
 
@@ -71,7 +71,7 @@ const ItemsRecommendation = () => {
                 onChange={handleSelectChange}
                 options={heroes_for_select}
                 isClearable
-                placeholder="Type hero name..."
+                placeholder="Введіть назву героя..."
                 styles={{
                     option: (provided, state) => ({
                         ...provided,

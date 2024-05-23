@@ -24,9 +24,9 @@ const ChatWordsPopularity = () => {
 
     // Data passed not through Plot data property
     const [additionalPlotData, setAdditionalPlotData] = useState({
-        title: "Words normalized usage count",
+        title: "Нормалізована кількість використань слів",
         yName: "",
-        xName: "Percentage of usage"
+        xName: "Відсоток використань"
     })
 
     const updateWordsPopularityData = async (event) => {
@@ -85,10 +85,10 @@ const ChatWordsPopularity = () => {
 
     return (
         <div>
-            <h2> Popularity </h2>
+            <h2> Популярність слів </h2>
             <select class="rating-dropdown" onChange={updateWordsPopularityData}>
-                <option value="default">Select the rating ranges</option>
-                <option value="">All ratings</option>
+                <option value="default">Виберіть діапазон рейтингу</option>
+                <option value="">Весь рейтинг</option>
                 {Object.keys(ratingMapping).map(key => (
                     <option value={key}>{ratingMapping[key]}</option>
                 ))}

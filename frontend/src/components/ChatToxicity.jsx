@@ -18,9 +18,9 @@ const ChatToxicity = () => {
     })
 
     const additionalPlot1Data = {
-        title: "Chat toxicity over time",
-        xName: "Time",
-        yName: "Toxicity rate, %"
+        title: "Токсичність чату в залежності від часу",
+        xName: "Час",
+        yName: "Відсоток токсичності, %"
     }
 
     const [plot2Data, setPlot2Data] = useState({
@@ -31,9 +31,9 @@ const ChatToxicity = () => {
     })
 
     const additionalPlot2Data = {
-        title: "Current chat toxicity over different rating",
-        xName: "Rating",
-        yName: "Toxicity rate, %"
+        title: "Поточна токсичність чату в залежності від рейтингу",
+        xName: "Рейтинг",
+        yName: "Відсоток токсичності, %"
     }
 
     const getPlot2Data = async () => {
@@ -89,10 +89,10 @@ const ChatToxicity = () => {
 
     return (
         <div>
-            <h2> Toxicity </h2>
+            <h2> Токсичність чату </h2>
             <select className="rating-dropdown" onChange={updatePlot1Data}>
-                <option value="default">Select the rating ranges</option>
-                <option value="">All ratings</option>
+                <option value="default">Виберіть діапазон рейтингу</option>
+                <option value="">Весь рейтинг</option>
                 {Object.keys(ratingMapping).map(key => (
                     <option value={key}>{ratingMapping[key]}</option>
                 ))}

@@ -20,19 +20,19 @@ const WinrateAnalysis = () => {
 
     return (
         <div>
-            <h1> Winrate analysis </h1>
+            <h1> Аналіз популярності героїв по відсотку перемог </h1>
             <div className='button-container'>
                 <div
                     onClick={showHeroesWinrate}
                     className={`button ${toShowHeroesWinrate ? 'disabled' : ''}`}
                 >
-                    Show heroes winrate analysis
+                    Показати аналіз героїв
                 </div>
                 <div
                     onClick={showHeroesComboWinrate}
                     className={`button ${toShowHeroesComboWinrate ? 'disabled' : ''}`}
                 >
-                    Show heroes combinations winrate analysis
+                    Показати аналіз комбінацій героїв
                 </div>
             </div>
 

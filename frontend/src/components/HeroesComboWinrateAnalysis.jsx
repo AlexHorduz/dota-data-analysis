@@ -2,7 +2,7 @@ import React from 'react';
 
 const HeroesComboWinrateAnalysis = () => {
     return (
-        <h2> Heroes combinations </h2>
+        <h2> Комбінації героїв </h2>
     );
 };
 
