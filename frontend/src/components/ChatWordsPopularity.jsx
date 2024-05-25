@@ -86,7 +86,7 @@ const ChatWordsPopularity = () => {
     return (
         <div>
             <h2> Популярність слів </h2>
-            <select class="rating-dropdown" onChange={updateWordsPopularityData}>
+            <select className="rating-dropdown" onChange={updateWordsPopularityData}>
                 <option value="default">Виберіть діапазон рейтингу</option>
                 <option value="">Весь рейтинг</option>
                 {Object.keys(ratingMapping).map(key => (

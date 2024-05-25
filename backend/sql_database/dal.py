@@ -2,12 +2,13 @@ from typing import List, Tuple, Optional
 import random
 
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import func, select
+from sqlalchemy.sql import func
 
 from .models import (
     Hero, 
     UserHeroGames,
     HeroesData,
+    HeroesComboData,
     ItemsData,
     WordsPopularity,
     ChatToxicity
@@ -99,6 +100,28 @@ def get_heroes_data(session: Session, rating_id: Optional[int]):
         result = (
             session.query(HeroesData)
             .join(subquery, subquery.c.max_timestamp == HeroesData.timestamp)
+            .all()
+        )
+
+    return result
+
+
+def get_heroes_combo_data(session: Session, rating_id: Optional[int]):
+    subquery = (
+        session.query(func.max(HeroesComboData.timestamp).label("max_timestamp"))
+        .subquery()
+    )
+    if rating_id:
+        result = (
+            session.query(HeroesComboData)
+            .join(subquery, subquery.c.max_timestamp == HeroesComboData.timestamp)
+            .filter(HeroesComboData.rating_id == rating_id)
+            .all()
+        )
+    else:
+        result = (
+            session.query(HeroesComboData)
+            .join(subquery, subquery.c.max_timestamp == HeroesComboData.timestamp)
             .all()
         )
 

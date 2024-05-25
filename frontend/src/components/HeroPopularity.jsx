@@ -61,7 +61,6 @@ const HeroPopularity = () => {
 
             heroStats = heroStats.slice(0, 20);
 
-            // Step 4: Extract hero_id and times_played for top 20 heroes
             const X = [];
             const Y = [];
             heroStats.forEach(hero => {
@@ -70,7 +69,6 @@ const HeroPopularity = () => {
             });
             console.log("X", X)
             updatedPlotData.x = X.map((id) => (
-                // `<img src="${heroes_data[id].image}" />`
                 heroes_data[id].name
             ));
             updatedPlotData.y = Y
@@ -82,15 +80,13 @@ const HeroPopularity = () => {
             let updatedAdditionalPlotData = { ...additionalPlotData };
             updatedAdditionalPlotData.tickvals = X
             updatedAdditionalPlotData.ticktext = X.map((id) => (
-                // `<img src="${heroes_data[id].image}" />`
                 heroes_data[id].name
             ));
-            // console.log(updatedAdditionalPlotData)
 
 
             setAdditionalPlotData(updatedAdditionalPlotData);
         } catch (error) {
-            console.error('Error fetching toxicity:', error);
+            console.error('Error fetching hero popularity:', error);
         }
     };
 
@@ -113,6 +109,8 @@ const HeroPopularity = () => {
                     title: additionalPlotData.title,
                     xaxis: {
                         title: additionalPlotData.xName,
+                        tickangle: 45,
+                        automargin: true
                     },
                     yaxis: {
                         title: additionalPlotData.yName

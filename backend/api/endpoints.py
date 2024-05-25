@@ -55,6 +55,18 @@ async def get_heroes_popularity(rating_input: RatingInputModel):
 
     return response
 
+@router.post("/getHeroesComboPopularity")
+async def get_heroes_combo_popularity(rating_input: RatingInputModel):
+    rank_id = rating_input.rating
+
+    db = SessionLocal()
+    try:
+        response = dal.get_heroes_combo_data(db, rank_id)
+    finally:
+        db.close()
+
+    return response
+
 
 @router.post("/getItemsPopularity")
 async def get_items_popularity(id_input: HeroIdInputModel):

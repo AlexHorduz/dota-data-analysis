@@ -361,7 +361,8 @@ class UpdateService:
 
         if not self.updated_items_data:
             for id in ALL_HEROES_IDS:
+                print(id)
                 items_data = self.parser.get_items_popularity(id)
                 self.update_items_data(items_data, id, timestamp)
-                # time.sleep(1.5)
+                time.sleep(1.5)
             self.updated_items_data = True
