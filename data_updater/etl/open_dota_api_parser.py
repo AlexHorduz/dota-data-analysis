@@ -48,12 +48,3 @@ class OpenDotaParser(DataParser):
         ]
 
         return response
-
-
-# pars = OpenDotaParser()
-# 76561199097772774
-
-# print(pars.get_user_heroes_games(76561199097772774))
-# print(pars.get_user_last_rating(76561199097772774))
-# print(pars.get_items_popularity(1))
-# print(pars.get_public_matches(min_rating_id=15))
