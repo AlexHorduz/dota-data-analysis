@@ -62,7 +62,7 @@ class Recommender:
         games_df /= games_df.sum(axis=1).values[0]
 
         probabilities = (
-            games_df.values 
+            games_df.to_numpy()
             * self.heroes_similarity.values
         ).sum(axis=1)
 
