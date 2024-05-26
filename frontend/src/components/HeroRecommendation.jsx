@@ -20,7 +20,7 @@ const HeroRecommendation = () => {
         if (value == 0) {
             delete gamesPlayedCopy[heroId];
         }
-        setGamesPlayed(gamesPlayedCopy);        
+        setGamesPlayed(gamesPlayedCopy);
     };
 
     const handleSubmit = async (event) => {
@@ -37,13 +37,15 @@ const HeroRecommendation = () => {
             <form>
                 <div className="hero-grid">
                     {recommendations.map((id) => (
-                        <div key={id} className="hero-item">
+                        <div className="hero-item">
                             <img src={heroes_data[id].image} alt={heroes_data[id].name} />
                             <p>{heroes_data[id].name}</p>
                         </div>
                     ))}
-                    {/* TODO refer to the items recommendation page after the recommendation is done */}
                 </div>
+                {(recommendations.length != 0) &&
+                    <p>Перейдіть на сторінку "Рекомендації речей", щоб дізнатись, з якими речами краще грати на цих героях</p>
+                }
                 <div className="submit-button" onClick={handleSubmit}>Отримати рекомендації</div>
                 <p className="instructions">Введіть кількість зіграних ігор на кожному з героїв</p>
                 <div className="hero-grid">
@@ -59,8 +61,8 @@ const HeroRecommendation = () => {
                         </div>
                     ))}
                 </div>
-            </form>
-        </div>
+            </form >
+        </div >
     );
 };
 
