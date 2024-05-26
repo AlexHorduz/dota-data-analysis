@@ -37,7 +37,7 @@ const HeroRecommendation = () => {
             <form>
                 <div className="hero-grid">
                     {recommendations.map((id) => (
-                        <div className="hero-item">
+                        <div key={id} className="hero-item">
                             <img src={heroes_data[id].image} alt={heroes_data[id].name} />
                             <p>{heroes_data[id].name}</p>
                         </div>
