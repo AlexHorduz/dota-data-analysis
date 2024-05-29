@@ -1,5 +1,5 @@
 # Use the official Python image based on Alpine Linux as the base image
-FROM python:3.10-alpine
+FROM pytorch/pytorch
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -17,8 +17,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the current directory contents into the container at /app
 COPY . /app/
 
+RUN python setup.py
+
 # Expose port 80 to allow communication to the FastAPI application
-EXPOSE 8001
+EXPOSE 8002
 
 # Command to run the FastAPI application using uvicorn server
 CMD ["python", "app.py"]
