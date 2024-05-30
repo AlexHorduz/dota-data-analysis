@@ -14,7 +14,9 @@ const ChatToxicity = () => {
         x: [],
         y: [],
         type: "scatter",
-        mode: "lines+markers"
+        mode: "lines+markers",
+        name: 'Рівень токсичності в залежності від часу',
+        showlegend: true,
     })
 
     const additionalPlot1Data = {
@@ -27,7 +29,9 @@ const ChatToxicity = () => {
         x: [],
         y: [],
         type: "",
-        mode: ""
+        mode: "",
+        name: 'Рівень токсичності в залежності від рейтингу',
+        showlegend: true,
     })
 
     const additionalPlot2Data = {
@@ -39,12 +43,7 @@ const ChatToxicity = () => {
     const getPlot2Data = async () => {
         try {
             const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/getToxicityOverRating`);
-            let updatedPlotData = {
-                x: [],
-                y: [],
-                type: "scatter",
-                mode: "lines+markers"
-            }
+            let updatedPlotData = {...plot2Data}
 
             updatedPlotData.x = response.data.map((pair) => pair[0])
                 .map((rating_id) => ratingMapping[rating_id]);
@@ -107,7 +106,12 @@ const ChatToxicity = () => {
                             height: 800,
                             title: additionalPlot1Data.title,
                             xaxis: { title: additionalPlot1Data.xName },
-                            yaxis: { title: additionalPlot1Data.yName }
+                            yaxis: { title: additionalPlot1Data.yName },
+                            legend: {
+                                x: 1,
+                                xanchor: 'right',
+                                y: 1
+                            }
                         }}
                     />
                 </div>
@@ -119,7 +123,12 @@ const ChatToxicity = () => {
                             height: 800,
                             title: additionalPlot2Data.title,
                             xaxis: { title: additionalPlot2Data.xName },
-                            yaxis: { title: additionalPlot2Data.yName }
+                            yaxis: { title: additionalPlot2Data.yName },
+                            legend: {
+                                x: 1,
+                                xanchor: 'right',
+                                y: 1
+                            }
                         }}
                     />
                 </div>
