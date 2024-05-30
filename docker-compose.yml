@@ -1,0 +1,31 @@
+services:
+  dota_db:
+    image: dota_db
+    container_name: dota_db
+    ports:
+      - "5432:5432"
+
+  data_updater:
+    image: data_updater
+    container_name: data_updater
+    depends_on:
+      - dota_db
+    ports:
+      - "8002:8002"
+
+  backend:
+    image: backend
+    container_name: backend
+    depends_on:
+      - data_updater
+    entrypoint: ["sh", "-c", "sleep 600 && python app.py"]
+    ports:
+      - "8001:8001"
+
+  frontend:
+    image: frontend
+    container_name: frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
